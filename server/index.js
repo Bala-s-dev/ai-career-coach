@@ -2,18 +2,20 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js'; // <-- Import auth routes
 
-// Load environment variables from .env file
 dotenv.config();
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middlewares
-// Enable Cross-Origin Resource Sharing
 app.use(cors());
-// Enable parsing of JSON data in request body
 app.use(express.json());
+
+// Mount the routers
+app.use('/api/auth', authRoutes); // <-- Use auth routes
 
 // Simple route for testing
 app.get('/api/test', (req, res) => {
