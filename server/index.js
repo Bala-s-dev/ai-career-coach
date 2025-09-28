@@ -9,6 +9,7 @@ import session from 'express-session';
 import connectDB from './config/db.js';
 import './config/passport.js'; 
 import authRoutes from './routes/authRoutes.js';
+import resumeRoutes from './routes/resumeRoutes.js';
 
 connectDB();
 
@@ -40,12 +41,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Mount the routers
-app.use('/api/auth', authRoutes); // <-- Use auth routes
+app.use('/api/auth', authRoutes); 
+app.use('/api/resume', resumeRoutes);
 
-// Simple route for testing
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Hello from the backend! 👋' });
-});
+// // Simple route for testing
+// app.get('/api/test', (req, res) => {
+//   res.json({ message: 'Hello from the backend! 👋' });
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

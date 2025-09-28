@@ -17,8 +17,11 @@
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "mongoose": "^8.18.2",
+    "multer": "^2.0.2",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "pdf-parse": "1.1.1",
+    "pdf-ts": "^0.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

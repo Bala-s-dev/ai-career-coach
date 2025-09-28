@@ -5,20 +5,48 @@ const ResumeAnalyzerPage = () => {
   const [file, setFile] = useState(null);
   const [analysis, setAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
+    setAnalysis('');
+    setError('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!file) {
-      alert('Please select a file first.');
+      setError('Please select a file first.');
       return;
     }
-    console.log('Uploading file:', file.name);
-    // Logic to send file to backend will go here
-    // For now, we are just logging it.
+
+    setIsLoading(true);
+    setAnalysis('');
+    setError('');
+
+    const formData = new FormData();
+    formData.append('resume', file); // 'resume' must match the key in upload.single('resume')
+
+    try {
+      const response = await fetch('http://localhost:5001/api/resume/analyze', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include', // Important: sends cookies for authentication
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to analyze resume.');
+      }
+
+      const result = await response.json();
+      // We'll display the extractedText for now
+      setAnalysis(result.extractedText);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -28,6 +56,7 @@ const ResumeAnalyzerPage = () => {
       </h1>
 
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
+        {/* ... form is the same ... */}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -48,7 +77,7 @@ const ResumeAnalyzerPage = () => {
             <button
               type="submit"
               disabled={isLoading || !file}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed transition duration-300"
             >
               {isLoading ? 'Analyzing...' : 'Analyze My Resume'}
             </button>
@@ -56,7 +85,23 @@ const ResumeAnalyzerPage = () => {
         </form>
       </div>
 
-      {/* We will render the analysis results here later */}
+      {/* --- New Section to Display Results --- */}
+      {error && (
+        <div className="mt-6 p-4 bg-red-900 border border-red-700 text-red-200 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      {analysis && (
+        <div className="mt-6">
+          <h2 className="text-2xl font-bold mb-4">Extracted Text</h2>
+          <div className="bg-gray-800 p-4 rounded-lg shadow-inner">
+            <pre className="whitespace-pre-wrap text-gray-300 text-sm">
+              {analysis}
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
