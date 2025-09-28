@@ -1,18 +1,43 @@
 // server/routes/authRoutes.js
 import express from 'express';
+import passport from 'passport';
 
 const router = express.Router();
 
-// @desc    Placeholder to get current user
+// @desc    Authenticate with Google
+// @route   GET /api/auth/google
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+// @desc    Google auth callback
+// @route   GET /api/auth/google/callback
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: 'http://localhost:5173/login',
+  }),
+  (req, res) => {
+    // Successful authentication, redirect to the dashboard.
+    res.redirect('http://localhost:5173/dashboard');
+  }
+);
+
+// @desc    Get current logged-in user
 // @route   GET /api/auth/user
-// @access  Public (for now)
 router.get('/user', (req, res) => {
-  // In the future, this will be a protected route
-  // and will return the actual logged-in user's data.
-  res.json({
-    id: '12345',
-    displayName: 'John Doe (Test)',
-    email: 'john.doe@example.com',
+  res.send(req.user); // req.user is populated by Passport's deserializeUser
+});
+
+// @desc    Logout user
+// @route   GET /api/auth/logout
+router.get('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('http://localhost:5173/'); // Redirect to homepage after logout
   });
 });
 
