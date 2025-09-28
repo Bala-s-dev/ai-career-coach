@@ -15,9 +15,9 @@ router.post('/analyze', protect, upload.single('resume'), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded.' });
     }
-    
+    const { jobDescription } = req.body;
     const extractedText = await PDF.pdfToText(req.file.buffer);
-    const analysisResult = await analyzeResume(extractedText);
+    const analysisResult = await analyzeResume(extractedText, jobDescription);
 
     res.json(analysisResult);
 
