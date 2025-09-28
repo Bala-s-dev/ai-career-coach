@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 const ResumeAnalyzerPage = () => {
   const [file, setFile] = useState(null);
-  const [analysis, setAnalysis] = useState('');
+  const [analysis, setAnalysis] = useState(null); 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,7 +41,7 @@ const ResumeAnalyzerPage = () => {
 
       const result = await response.json();
       // We'll display the extractedText for now
-      setAnalysis(result.extractedText);
+      setAnalysis(result);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -93,15 +93,55 @@ const ResumeAnalyzerPage = () => {
       )}
 
       {analysis && (
-        <div className="mt-6">
-          <h2 className="text-2xl font-bold mb-4">Extracted Text</h2>
-          <div className="bg-gray-800 p-4 rounded-lg shadow-inner">
-            <pre className="whitespace-pre-wrap text-gray-300 text-sm">
-              {analysis}
-            </pre>
+        <div className="mt-8 space-y-6">
+          {/* Overall Score & Summary */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-inner">
+            <h2 className="text-2xl font-bold mb-4">Analysis Complete</h2>
+            <div className="text-center mb-4">
+              <p className="text-lg text-gray-400">Overall Score</p>
+              <p className="text-6xl font-bold text-blue-400">
+                {analysis.overallScore}/100
+              </p>
+            </div>
+            <p className="text-gray-300">{analysis.summary}</p>
+          </div>
+
+          {/* Keyword Gaps */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-inner">
+            <h3 className="text-xl font-semibold mb-3">Suggested Keywords</h3>
+            <div className="flex flex-wrap gap-2">
+              {analysis.keywordGaps.map((keyword, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-700 text-blue-300 text-sm font-medium px-3 py-1 rounded-full"
+                >
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Improvement Suggestions */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-inner">
+            <h3 className="text-xl font-semibold mb-4">
+              Actionable Improvements
+            </h3>
+            <div className="space-y-4">
+              {analysis.improvements.map((item, index) => (
+                <div key={index} className="border-l-4 border-yellow-500 pl-4">
+                  <p className="text-gray-400 text-sm">Original:</p>
+                  <blockquote className="text-gray-300 italic">
+                    "{item.before}"
+                  </blockquote>
+                  <p className="text-gray-400 text-sm mt-2">Suggestion:</p>
+                  <p className="text-green-300 font-medium">"{item.after}"</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
+      
     </div>
   );
 };

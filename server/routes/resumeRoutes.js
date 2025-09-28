@@ -3,6 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import { protect } from '../middleware/authMiddleware.js';
 import PDF from 'pdf-ts';
+import { analyzeResume } from '../services/aiService.js'; 
 
 const router = express.Router();
 
@@ -16,11 +17,10 @@ router.post('/analyze', protect, upload.single('resume'), async (req, res) => {
     }
     
     const extractedText = await PDF.pdfToText(req.file.buffer);
+    const analysisResult = await analyzeResume(extractedText);
 
-    res.json({
-      message: 'PDF parsed successfully!',
-      extractedText: extractedText,
-    });
+    res.json(analysisResult);
+
   } catch (error) {
     console.error('Error parsing PDF:', error);
     res.status(500).json({ message: 'Error processing file.' });
