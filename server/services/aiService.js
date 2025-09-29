@@ -62,6 +62,35 @@ export const generateInterviewQuestions = async (jobTitle) => {
   }
 };
 
+export const getAnswerFeedback = async (question, answer) => {
+  const prompt = `
+    You are an expert interview coach providing feedback.
+    A candidate was asked the following interview question:
+    ---
+    Question: "${question}"
+    ---
+    The candidate provided this answer:
+    ---
+    Answer: "${answer}"
+    ---
+    Your task is to provide constructive feedback on the answer. Analyze its structure (like the STAR method), clarity, conciseness, and content. Be encouraging but also provide specific, actionable advice for improvement. Keep the feedback to 2-4 sentences.
+
+    Return your feedback as a simple string. Do not use JSON or markdown.
+  `;
+
+  try {
+    const response = await groq.chat.completions.create({
+      model: 'openai/gpt-oss-20b',
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    return response.choices[0].message.content.trim();
+  } catch (error) {
+    console.error('Error generating answer feedback with Groq:', error);
+    throw new Error('Failed to generate answer feedback from AI service.');
+  }
+};
+
 export const analyzeResume = async (resumeText, jobDescription = '') => {
   let prompt;
 
