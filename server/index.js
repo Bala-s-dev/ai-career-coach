@@ -10,6 +10,7 @@ import connectDB from './config/db.js';
 import './config/passport.js'; 
 import authRoutes from './routes/authRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 
 connectDB();
 
@@ -43,6 +44,7 @@ app.use(passport.session());
 // Mount the routers
 app.use('/api/auth', authRoutes); 
 app.use('/api/resume', resumeRoutes);
+app.use('/api/jobs', jobRoutes);
 
 // // Simple route for testing
 // app.get('/api/test', (req, res) => {
