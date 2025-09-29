@@ -4,6 +4,7 @@ import multer from 'multer';
 import { protect } from '../middleware/authMiddleware.js';
 import PDF from 'pdf-ts';
 import { analyzeResume, generateJobQueryFromResume } from '../services/aiService.js'; 
+import Analysis from '../models/Analysis.js';
 
 const router = express.Router();
 
@@ -19,8 +20,19 @@ router.post('/analyze', protect, upload.single('resume'), async (req, res) => {
     const extractedText = await PDF.pdfToText(req.file.buffer);
     const analysisResult = await analyzeResume(extractedText, jobDescription);
 
-    res.json({ analysis: analysisResult, extractedText: extractedText });
+    // --- SAVE TO DATABASE ---
+    const newAnalysis = new Analysis({
+      user: req.user._id, // req.user is from Passport
+      score: analysisResult.matchScore || analysisResult.overallScore,
+      summary: analysisResult.summary,
+      improvements: analysisResult.improvements,
+      keywordGaps: analysisResult.keywordGaps,
+      isTargetedAnalysis: !!jobDescription, // True if a job description was provided
+    });
+    await newAnalysis.save();
+    // -----------------------
 
+    res.json({ analysis: analysisResult, extractedText: extractedText });
   } catch (error) {
     console.error('Error parsing PDF:', error);
     res.status(500).json({ message: 'Error processing file.' });
@@ -40,5 +52,17 @@ router.post('/generate-job-query', protect, async (req, res) => {
     res.status(500).json({ message: 'Failed to generate job query.' });
   }
 });
+
+router.get('/history', protect, async (req, res) => {
+  try {
+    const history = await Analysis.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+    res.json(history);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch analysis history.' });
+  }
+});
+
 
 export default router;

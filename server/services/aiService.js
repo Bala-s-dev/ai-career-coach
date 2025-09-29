@@ -109,6 +109,9 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
       You are an expert HR recruiter... (The initial instructions are the same)
       
       The JSON object must have these exact keys: "matchScore", "summary", "keywordGaps", and "improvements".
+      // ...
+- \"matchScore\": A numerical score from 0 to 100. **Return only the integer value, do not include any text or slashes.**
+//...
       The "improvements" key must be an array of 3-4 objects. EACH object in the array must follow this exact JSON structure:
       ${improvementJsonStructure}
 
@@ -128,6 +131,9 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
       You are an expert career coach... (The initial instructions are the same)
 
       The JSON object must have these exact keys: "overallScore", "summary", "keywordGaps", and "improvements".
+      // ...
+Your analysis should be in a structured JSON format with the following keys: \"overallScore\" (a numerical score from 0-100, **return only the integer value**), ...
+//...
       The "improvements" key must be an array of 3-4 objects. EACH object in the array must follow this exact JSON structure:
       ${improvementJsonStructure}
 
