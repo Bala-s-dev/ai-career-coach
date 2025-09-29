@@ -16,6 +16,9 @@ const Navbar = ({ user }) => {
           <Link to="/jobs" className="text-gray-300 hover:text-white">
             Job Search
           </Link>
+          <Link to="/interview" className="text-gray-300 hover:text-white">
+            Interview Prep
+          </Link>
           {user && (
             <>
               <img

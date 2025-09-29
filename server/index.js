@@ -11,6 +11,7 @@ import './config/passport.js';
 import authRoutes from './routes/authRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
+import interviewRoutes from './routes/interviewRoutes.js';
 
 connectDB();
 
@@ -45,6 +46,7 @@ app.use(passport.session());
 app.use('/api/auth', authRoutes); 
 app.use('/api/resume', resumeRoutes);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/interview', interviewRoutes);
 
 // // Simple route for testing
 // app.get('/api/test', (req, res) => {

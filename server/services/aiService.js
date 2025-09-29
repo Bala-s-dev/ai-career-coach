@@ -37,6 +37,31 @@ export const generateJobQueryFromResume = async (resumeText) => {
   }
 };
 
+export const generateInterviewQuestions = async (jobTitle) => {
+  const prompt = `
+    You are an expert interviewer and hiring manager for a top tech company.
+    Your task is to generate 5 insightful interview questions for the job title of "${jobTitle}".
+    The questions should cover a mix of technical skills, behavioral situations, and problem-solving abilities relevant to the role.
+
+    Return your response as a structured JSON object. The object must have a single key named "questions" which is an array of 5 strings.
+    Do not include any text or markdown formatting before or after the JSON object.
+  `;
+
+  try {
+    const response = await groq.chat.completions.create({
+      model: 'openai/gpt-oss-20b',
+      messages: [{ role: 'user', content: prompt }],
+      response_format: { type: 'json_object' },
+    });
+
+    const responseText = response.choices[0].message.content;
+    return JSON.parse(responseText);
+  } catch (error) {
+    console.error('Error generating interview questions with Groq:', error);
+    throw new Error('Failed to generate interview questions from AI service.');
+  }
+};
+
 export const analyzeResume = async (resumeText, jobDescription = '') => {
   let prompt;
 

@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import ResumeAnalyzerPage from './pages/ResumeAnalyzerPage'; 
 import JobSearchPage from './pages/JobSearchPage';
+import InterviewPrepPage from './pages/InterviewPrepPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -62,6 +63,7 @@ function App() {
               />
               <Route path="/analyzer" element={<ResumeAnalyzerPage />} />
               <Route path="/jobs" element={<JobSearchPage />} />
+              <Route path="/interview" element={<InterviewPrepPage />} />
               {/* Redirect any other path to dashboard if logged in */}
               <Route path="*" element={<DashboardPage user={user} />} />
             </>
