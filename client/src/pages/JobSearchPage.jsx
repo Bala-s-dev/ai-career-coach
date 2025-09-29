@@ -1,15 +1,18 @@
 // client/src/pages/JobSearchPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const JobSearchPage = () => {
+  const location = useLocation(); 
   const [query, setQuery] = useState('React Developer in India');
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query) return;
+  const handleSearch = async (e, directQuery) => {
+    if (e) e.preventDefault();
+    const searchQuery = directQuery || query;
+    if (!searchQuery) return;
 
     setIsLoading(true);
     setJobs([]);
@@ -18,7 +21,7 @@ const JobSearchPage = () => {
     try {
       // Note: We are calling our own backend, not RapidAPI directly.
       const response = await fetch(
-        `/api/jobs/search?query=${encodeURIComponent(query)}`,
+        `/api/jobs/search?query=${encodeURIComponent(searchQuery)}`,
         {
           credentials: 'include',
         }
@@ -38,6 +41,15 @@ const JobSearchPage = () => {
     }
   };
 
+  useEffect(() => {
+    const autoQuery = location.state?.autoQuery;
+    if (autoQuery) {
+      setQuery(autoQuery);
+      // Run the search automatically, passing the query directly
+      handleSearch(null, autoQuery);
+    }
+  }, [location.state]);
+  
   // Helper to safely truncate the description
   const truncateDescription = (text, maxLength = 150) => {
     if (!text) return 'No description available.';

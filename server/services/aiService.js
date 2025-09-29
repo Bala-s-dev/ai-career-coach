@@ -5,6 +5,38 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+export const generateJobQueryFromResume = async (resumeText) => {
+  const prompt = `
+    Analyze the following resume text. Based on the skills, job titles, and experience, what is the single most appropriate job title or search query for this person's next job?
+
+    Return ONLY the job title string and nothing else. Do not add quotes, labels, or any explanatory text.
+
+    Examples of good responses:
+    - Senior Software Engineer
+    - Product Manager
+    - Data Analyst
+    - Graphic Designer
+
+    Here is the resume text:
+    ---
+    ${resumeText}
+    ---
+  `;
+
+  try {
+    // NOTE: We are NOT asking for JSON here, just plain text.
+    const response = await groq.chat.completions.create({
+      model: 'openai/gpt-oss-20b',
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    return response.choices[0].message.content.trim();
+  } catch (error) {
+    console.error('Error generating job query with Groq:', error);
+    throw new Error('Failed to generate job query from AI service.');
+  }
+};
+
 export const analyzeResume = async (resumeText, jobDescription = '') => {
   let prompt;
 

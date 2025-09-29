@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ResumeAnalyzerPage = () => {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState('');
   const [analysis, setAnalysis] = useState(null);
+  const [resumeText, setResumeText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(false);
   const [error, setError] = useState('');
 
   // Helper component for styling the priority badges
@@ -60,13 +64,37 @@ const ResumeAnalyzerPage = () => {
       }
 
       const result = await response.json();
-      setAnalysis(result);
+      setAnalysis(result.analysis);
+      setResumeText(result.extractedText);
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleFindJobs = async () => {
+    setIsLoadingJobs(true);
+    setError('');
+    try {
+      const response = await fetch('/api/resume/generate-job-query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resumeText }),
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('Could not generate job query.');
+
+      const data = await response.json();
+
+      navigate('/jobs', { state: { autoQuery: data.query } });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoadingJobs(false);
+    }
+  };
+
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -130,6 +158,16 @@ const ResumeAnalyzerPage = () => {
 
       {analysis && (
         <div className="mt-8 space-y-6">
+          {/* --- NEW BUTTON --- */}
+          <div className="text-center p-4">
+            <button
+              onClick={handleFindJobs}
+              disabled={isLoadingJobs}
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg disabled:bg-gray-500 transition duration-300 text-lg"
+            >
+              {isLoadingJobs ? 'Thinking...' : '✨ Find Jobs For Me'}
+            </button>
+          </div>
           {/* Overall Score & Summary */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-inner">
             <h2 className="text-2xl font-bold mb-4">Analysis Complete</h2>
