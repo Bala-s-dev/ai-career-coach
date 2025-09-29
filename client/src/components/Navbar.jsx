@@ -13,6 +13,9 @@ const Navbar = ({ user }) => {
           <Link to="/analyzer" className="text-gray-300 hover:text-white">
             Resume Analyzer
           </Link>
+          <Link to="/jobs" className="text-gray-300 hover:text-white">
+            Job Search
+          </Link>
           {user && (
             <>
               <img

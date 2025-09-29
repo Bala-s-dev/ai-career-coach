@@ -4,7 +4,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
-import ResumeAnalyzerPage from './pages/ResumeAnalyzerPage'; // We will create this next
+import ResumeAnalyzerPage from './pages/ResumeAnalyzerPage'; 
+import JobSearchPage from './pages/JobSearchPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +61,7 @@ function App() {
                 element={<DashboardPage user={user} />}
               />
               <Route path="/analyzer" element={<ResumeAnalyzerPage />} />
+              <Route path="/jobs" element={<JobSearchPage />} />
               {/* Redirect any other path to dashboard if logged in */}
               <Route path="*" element={<DashboardPage user={user} />} />
             </>
