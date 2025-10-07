@@ -26,7 +26,7 @@ export const generateJobQueryFromResume = async (resumeText) => {
   try {
     // NOTE: We are NOT asking for JSON here, just plain text.
     const response = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
+      model: process.env.GROQ_API_MODEL_NAME,
       messages: [{ role: 'user', content: prompt }],
     });
 
@@ -49,7 +49,7 @@ export const generateInterviewQuestions = async (jobTitle) => {
 
   try {
     const response = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
+      model: process.env.GROQ_API_MODEL_NAME,
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });
@@ -80,7 +80,7 @@ export const getAnswerFeedback = async (question, answer) => {
 
   try {
     const response = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
+      model: process.env.GROQ_API_MODEL_NAME,
       messages: [{ role: 'user', content: prompt }],
     });
 
@@ -146,7 +146,7 @@ Your analysis should be in a structured JSON format with the following keys: \"o
 
   try {
     const response = await groq.chat.completions.create({
-      model: 'openai/gpt-oss-20b',
+      model: process.env.GROQ_API_MODEL_NAME,
       messages: [{ role: 'user', content: prompt }],
       response_format: { type: 'json_object' },
     });
