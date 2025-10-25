@@ -33,7 +33,7 @@ router.get(
 
     try {
       const response = await axios.request(options);
-      res.json(response.data.data); // The jobs are in the 'data' property of the response
+      res.json(response.data.data); 
     } catch (error) {
       console.error('Error fetching jobs from JSearch API:', error);
       res.status(500).json({ message: 'Failed to fetch jobs.' });

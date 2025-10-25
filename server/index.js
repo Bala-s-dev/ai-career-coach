@@ -32,9 +32,9 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.COOKIE_KEY, // This is the secret used to sign the session ID cookie
-    resave: false, // Don't save session if unmodified
-    saveUninitialized: false, // Don't create session until something is stored
+    secret: process.env.COOKIE_KEY, 
+    resave: false, 
+    saveUninitialized: false, 
   })
 );
 
@@ -42,7 +42,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Mount the routers
+//routes
 app.use('/api/auth', authRoutes); 
 app.use('/api/resume', resumeRoutes);
 app.use('/api/jobs', jobRoutes);

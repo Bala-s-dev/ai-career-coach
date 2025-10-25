@@ -1,6 +1,4 @@
-// server/services/aiService.js
 import Groq from 'groq-sdk';
-// ... (groq initialization)
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });

@@ -1,4 +1,3 @@
-// server/routes/interviewRoutes.js
 import express from 'express';
 import { protect } from '../middleware/authMiddleware.js';
 import { generateInterviewQuestions , getAnswerFeedback} from '../services/aiService.js';

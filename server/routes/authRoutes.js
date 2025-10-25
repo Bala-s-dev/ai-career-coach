@@ -1,4 +1,3 @@
-// server/routes/authRoutes.js
 import express from 'express';
 import passport from 'passport';
 
@@ -19,7 +18,6 @@ router.get(
     failureRedirect: 'http://localhost:5173/login',
   }),
   (req, res) => {
-    // Successful authentication, redirect to the dashboard.
     res.redirect('http://localhost:5173/dashboard');
   }
 );
@@ -27,7 +25,7 @@ router.get(
 // @desc    Get current logged-in user
 // @route   GET /api/auth/user
 router.get('/user', (req, res) => {
-  res.send(req.user); // req.user is populated by Passport's deserializeUser
+  res.send(req.user); 
 });
 
 // @desc    Logout user
@@ -37,7 +35,7 @@ router.get('/logout', (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect('http://localhost:5173/'); // Redirect to homepage after logout
+    res.redirect('http://localhost:5173/'); 
   });
 });
 

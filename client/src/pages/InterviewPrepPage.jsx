@@ -6,8 +6,6 @@ const InterviewPrepPage = () => {
   const [questions, setQuestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // State for the active interview session
   const [sessionStarted, setSessionStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -23,7 +21,7 @@ const InterviewPrepPage = () => {
     try {
       const response = await fetch('/api/interview/questions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type' : 'application/json' },
         body: JSON.stringify({ jobTitle }),
         credentials: 'include',
       });

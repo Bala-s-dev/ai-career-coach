@@ -1,4 +1,3 @@
-// server/routes/resumeRoutes.js
 import express from 'express';
 import multer from 'multer';
 import { protect } from '../middleware/authMiddleware.js';
@@ -22,17 +21,16 @@ router.post('/analyze', protect, upload.single('resume'), async (req, res) => {
 
     // --- SAVE TO DATABASE ---
     const newAnalysis = new Analysis({
-      user: req.user._id, // req.user is from Passport
+      user: req.user._id, 
       score: analysisResult.matchScore || analysisResult.overallScore,
       summary: analysisResult.summary,
       improvements: analysisResult.improvements,
       keywordGaps: analysisResult.keywordGaps,
-      isTargetedAnalysis: !!jobDescription, // True if a job description was provided
+      isTargetedAnalysis: !!jobDescription, 
     });
     await newAnalysis.save();
-    // -----------------------
-
     res.json({ analysis: analysisResult, extractedText: extractedText });
+    
   } catch (error) {
     console.error('Error parsing PDF:', error);
     res.status(500).json({ message: 'Error processing file.' });

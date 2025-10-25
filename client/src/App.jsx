@@ -23,7 +23,6 @@ function App() {
           const userData = await res.json();
           if (userData) {
             setUser(userData);
-            // If user is logged in, redirect them from home to dashboard
             if (window.location.pathname === '/') {
               navigate('/dashboard');
             }
@@ -57,20 +56,15 @@ function App() {
         <Routes>
           {user ? (
             <>
-              <Route
-                path="/dashboard"
-                element={<DashboardPage user={user} />}
-              />
+              <Route path="/dashboard"element={<DashboardPage user={user} />}/>
               <Route path="/analyzer" element={<ResumeAnalyzerPage />} />
               <Route path="/jobs" element={<JobSearchPage />} />
               <Route path="/interview" element={<InterviewPrepPage />} />
-              {/* Redirect any other path to dashboard if logged in */}
               <Route path="*" element={<DashboardPage user={user} />} />
             </>
           ) : (
             <>
               <Route path="/" element={<HomePage />} />
-              {/* Redirect any other path to home if not logged in */}
               <Route path="*" element={<HomePage />} />
             </>
           )}

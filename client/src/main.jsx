@@ -9,7 +9,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       {' '}
-      {/* <-- Wrap App */}
       <App />
     </BrowserRouter>
   </React.StrictMode>

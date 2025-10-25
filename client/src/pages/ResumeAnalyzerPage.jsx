@@ -11,7 +11,6 @@ const ResumeAnalyzerPage = () => {
   const [isLoadingJobs, setIsLoadingJobs] = useState(false);
   const [error, setError] = useState('');
 
-  // Helper component for styling the priority badges
   const PriorityBadge = ({ priority }) => {
     const styles = {
       High: 'bg-red-200 text-red-800',
@@ -31,7 +30,6 @@ const ResumeAnalyzerPage = () => {
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    // Clear previous results when a new file is selected
     setAnalysis(null);
     setError('');
   };
