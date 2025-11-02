@@ -4,6 +4,8 @@
 // console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 import passport from 'passport';
 import session from 'express-session';
 import connectDB from './config/db.js';
@@ -16,7 +18,18 @@ import interviewRoutes from './routes/interviewRoutes.js';
 connectDB();
 
 const app = express();
+app.use(helmet());
 const PORT = process.env.PORT || 5001;
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
+
+app.use('/api', limiter);
 
 app.use(
   cors({

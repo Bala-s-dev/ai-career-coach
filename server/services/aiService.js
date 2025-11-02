@@ -22,7 +22,6 @@ export const generateJobQueryFromResume = async (resumeText) => {
   `;
 
   try {
-    // NOTE: We are NOT asking for JSON here, just plain text.
     const response = await groq.chat.completions.create({
       model: process.env.GROQ_API_MODEL_NAME,
       messages: [{ role: 'user', content: prompt }],
@@ -92,7 +91,6 @@ export const getAnswerFeedback = async (question, answer) => {
 export const analyzeResume = async (resumeText, jobDescription = '') => {
   let prompt;
 
-  // The new, more detailed structure we want for each improvement.
   const improvementJsonStructure = `{
     "category": "A category like 'Impact & Action Verbs', 'Clarity & Conciseness', or 'Skills & Keywords'",
     "priority": "'High', 'Medium', or 'Low'",
@@ -102,7 +100,7 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
   }`;
 
   if (jobDescription) {
-    // --- PROMPT 2: TARGETED ANALYSIS (UPGRADED) ---
+    // --- TARGETED ANALYSIS  ---
     prompt = `
       You are an expert HR recruiter... (The initial instructions are the same)
       
@@ -124,7 +122,7 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
       ---
     `;
   } else {
-    // --- PROMPT 1: GENERAL ANALYSIS (UPGRADED) ---
+    // --- GENERAL ANALYSIS ---
     prompt = `
       You are an expert career coach... (The initial instructions are the same)
 
