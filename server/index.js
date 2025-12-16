@@ -19,6 +19,7 @@ connectDB();
 
 const app = express();
 app.use(helmet());
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5001;
 
 const limiter = rateLimit({
@@ -33,10 +34,10 @@ app.use('/api', limiter);
 
 app.use(
   cors({
-    origin: 'http://localhost:5173', 
+    origin: process.env.CLIENT_URL,
     methods: 'GET,POST,PUT,DELETE',
     credentials: true,
-  })
+    })
 );
 
 app.use(express.json());
@@ -47,7 +48,12 @@ app.use(
   session({
     secret: process.env.COOKIE_KEY, 
     resave: false, 
-    saveUninitialized: false, 
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: 'none', 
+      maxAge: 24 * 60 * 60 * 1000 
+    } 
   })
 );
 
