@@ -56,11 +56,6 @@ const ResumeAnalyzerPage = () => {
         headers: { 'Content-Type': 'multipart/form-data' }, 
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to analyze resume.');
-      }
-
       const result = response.data;
       setAnalysis(result.analysis);
       setResumeText(result.extractedText);
@@ -78,7 +73,6 @@ const ResumeAnalyzerPage = () => {
       const response = await api.post('/resume/generate-job-query', {
         resumeText,
       });
-      if (!response.ok) throw new Error('Could not generate job query.');
       
       const data = response.data;
 
