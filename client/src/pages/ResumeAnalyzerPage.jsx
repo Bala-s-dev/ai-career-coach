@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const ResumeAnalyzerPage = () => {
   const navigate = useNavigate();
@@ -50,10 +51,9 @@ const ResumeAnalyzerPage = () => {
     formData.append('jobDescription', jobDescription);
 
     try {
-      const response = await fetch('http://localhost:5001/api/resume/analyze', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
+      
+      const response = await api.post('/resume/analyze', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }, 
       });
 
       if (!response.ok) {
@@ -61,7 +61,7 @@ const ResumeAnalyzerPage = () => {
         throw new Error(errorData.message || 'Failed to analyze resume.');
       }
 
-      const result = await response.json();
+      const result = response.data;
       setAnalysis(result.analysis);
       setResumeText(result.extractedText);
     } catch (err) {
@@ -75,15 +75,12 @@ const ResumeAnalyzerPage = () => {
     setIsLoadingJobs(true);
     setError('');
     try {
-      const response = await fetch('/api/resume/generate-job-query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resumeText }),
-        credentials: 'include',
+      const response = await api.post('/resume/generate-job-query', {
+        resumeText,
       });
       if (!response.ok) throw new Error('Could not generate job query.');
-
-      const data = await response.json();
+      
+      const data = response.data;
 
       navigate('/jobs', { state: { autoQuery: data.query } });
     } catch (err) {
