@@ -9,7 +9,7 @@ const HomePage = () => {
         Login to get started on your professional journey.
       </p>
       <a
-        href="http://localhost:5001/api/auth/google"
+        href={`${import.meta.env.VITE_API_URL}/auth/google`}
         className="mt-8 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300"
       >
         Login with Google

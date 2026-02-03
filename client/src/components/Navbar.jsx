@@ -27,7 +27,7 @@ const Navbar = ({ user }) => {
                 className="w-8 h-8 rounded-full"
               />
               <a
-                href="http://localhost:5001/api/auth/logout"
+                href={`${import.meta.env.VITE_API_URL}/auth/logout`}
                 className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
               >
                 Logout
