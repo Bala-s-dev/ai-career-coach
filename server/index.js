@@ -5,6 +5,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import MongoStore from 'connect-mongo';
 import { rateLimit } from 'express-rate-limit';
 import passport from 'passport';
 import session from 'express-session';
@@ -46,14 +47,18 @@ app.use(express.json());
 
 app.use(
   session({
-    secret: process.env.COOKIE_KEY, 
-    resave: false, 
+    secret: process.env.COOKIE_KEY,
+    resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: 'sessions'
+    }),
     cookie: {
       secure: true,
-      sameSite: 'none', 
-      maxAge: 24 * 60 * 60 * 1000 
-    } 
+      sameSite: 'none',
+      maxAge: 24 * 60 * 60 * 1000
+    }
   })
 );
 
