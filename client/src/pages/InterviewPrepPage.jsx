@@ -1,5 +1,6 @@
 // client/src/pages/InterviewPrepPage.jsx
 import React, { useState } from 'react';
+import api from '../api'; // Use the absolute API instance for production
 
 const InterviewPrepPage = () => {
   const [jobTitle, setJobTitle] = useState('');
@@ -19,21 +20,18 @@ const InterviewPrepPage = () => {
     setError('');
     setQuestions([]);
     try {
-      const response = await fetch('/api/interview/questions', {
-        method: 'POST',
-        headers: { 'Content-Type' : 'application/json' },
-        body: JSON.stringify({ jobTitle }),
-        credentials: 'include',
-      });
-      if (!response.ok) throw new Error('Failed to generate questions.');
-      const data = await response.json();
-      setQuestions(data.questions);
+      // POST request to backend using the api instance
+      const response = await api.post('/interview/questions', { jobTitle });
+      
+      // Axios automatically parses JSON into response.data
+      setQuestions(response.data.questions);
       setSessionStarted(true);
       setCurrentQuestionIndex(0);
       setFeedback('');
       setUserAnswer('');
     } catch (err) {
-      setError(err.message);
+      // Improved error handling for production
+      setError(err.response?.data?.message || 'Failed to generate questions.');
     } finally {
       setIsLoading(false);
     }
@@ -46,20 +44,15 @@ const InterviewPrepPage = () => {
     setError('');
     setFeedback('');
     try {
-      const response = await fetch('/api/interview/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: questions[currentQuestionIndex],
-          answer: userAnswer,
-        }),
-        credentials: 'include',
+      // Submitting the answer for AI feedback
+      const response = await api.post('/interview/feedback', {
+        question: questions[currentQuestionIndex],
+        answer: userAnswer,
       });
-      if (!response.ok) throw new Error('Failed to get feedback.');
-      const data = await response.json();
-      setFeedback(data.feedback);
+      
+      setFeedback(response.data.feedback);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || 'Failed to get feedback.');
     } finally {
       setIsGettingFeedback(false);
     }
