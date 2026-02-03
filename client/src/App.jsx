@@ -1,6 +1,6 @@
-// client/src/App.jsx
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import api from './api'; // Use your custom axios instance
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
@@ -16,22 +16,17 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch('http://localhost:5001/api/auth/user', {
-          credentials: 'include',
-        });
-        if (res.ok) {
-          const userData = await res.json();
-          if (userData) {
-            setUser(userData);
-            if (window.location.pathname === '/') {
-              navigate('/dashboard');
-            }
-          } else {
-            setUser(null);
+        // Automatically uses VITE_API_URL and sends cookies
+        const res = await api.get('/auth/user'); 
+        if (res.data) {
+          setUser(res.data);
+          if (window.location.pathname === '/') {
+            navigate('/dashboard');
           }
         }
       } catch (error) {
         console.error('Could not fetch user', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -49,14 +44,12 @@ function App() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white pt-20">
-      {' '}
-      {/* pt-20 for navbar height */}
       {user && <Navbar user={user} />}
       <main className="container mx-auto p-4">
         <Routes>
           {user ? (
             <>
-              <Route path="/dashboard"element={<DashboardPage user={user} />}/>
+              <Route path="/dashboard" element={<DashboardPage user={user} />}/>
               <Route path="/analyzer" element={<ResumeAnalyzerPage />} />
               <Route path="/jobs" element={<JobSearchPage />} />
               <Route path="/interview" element={<InterviewPrepPage />} />
