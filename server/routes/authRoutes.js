@@ -15,10 +15,10 @@ router.get(
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: 'http://localhost:5173/login',
+    failureRedirect: `${process.env.CLIENT_URL}/login`,
   }),
   (req, res) => {
-    res.redirect('http://localhost:5173/dashboard');
+    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
   }
 );
 
@@ -35,7 +35,7 @@ router.get('/logout', (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect('http://localhost:5173/'); 
+    res.redirect(`${process.env.CLIENT_URL}/`); 
   });
 });
 
