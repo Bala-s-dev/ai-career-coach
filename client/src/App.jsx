@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import api from './api'; // Use your custom axios instance
+import api from './api'; //
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Automatically uses VITE_API_URL and sends cookies
+        // Uses the production URL and handles credentials automatically
         const res = await api.get('/auth/user'); 
         if (res.data) {
           setUser(res.data);
