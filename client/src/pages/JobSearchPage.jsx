@@ -20,20 +20,8 @@ const JobSearchPage = () => {
 
     try {
       // Note: We are calling our own backend, not RapidAPI directly.
-      const response = await fetch(
-        `/api/jobs/search?query=${encodeURIComponent(searchQuery)}`,
-        {
-          credentials: 'include',
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to fetch jobs.');
-      }
-
-      const data = await response.json();
-      setJobs(data);
+      const response = await api.get(`/jobs/search?query=${encodeURIComponent(searchQuery)}`);
+      setJobs(response.data);
     } catch (err) {
       setError(err.message);
     } finally {
