@@ -1,6 +1,5 @@
-// client/src/pages/InterviewPrepPage.jsx
 import React, { useState } from 'react';
-import api from '../api'; // Use the absolute API instance for production
+import api from '../api';
 
 const InterviewPrepPage = () => {
   const [jobTitle, setJobTitle] = useState('');
@@ -16,21 +15,14 @@ const InterviewPrepPage = () => {
   const handleStartSession = async (e) => {
     e.preventDefault();
     if (!jobTitle) return;
-    setIsLoading(true);
-    setError('');
-    setQuestions([]);
+    setIsLoading(true); setError(''); setQuestions([]);
     try {
-      // POST request to backend using the api instance
       const response = await api.post('/interview/questions', { jobTitle });
-      
-      // Axios automatically parses JSON into response.data
       setQuestions(response.data.questions);
       setSessionStarted(true);
       setCurrentQuestionIndex(0);
-      setFeedback('');
-      setUserAnswer('');
+      setFeedback(''); setUserAnswer('');
     } catch (err) {
-      // Improved error handling for production
       setError(err.response?.data?.message || 'Failed to generate questions.');
     } finally {
       setIsLoading(false);
@@ -40,16 +32,12 @@ const InterviewPrepPage = () => {
   const handleSubmitAnswer = async (e) => {
     e.preventDefault();
     if (!userAnswer) return;
-    setIsGettingFeedback(true);
-    setError('');
-    setFeedback('');
+    setIsGettingFeedback(true); setError(''); setFeedback('');
     try {
-      // Submitting the answer for AI feedback
       const response = await api.post('/interview/feedback', {
         question: questions[currentQuestionIndex],
         answer: userAnswer,
       });
-      
       setFeedback(response.data.feedback);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to get feedback.');
@@ -60,122 +48,175 @@ const InterviewPrepPage = () => {
 
   const handleNextQuestion = () => {
     setCurrentQuestionIndex((prev) => prev + 1);
-    setUserAnswer('');
-    setFeedback('');
+    setUserAnswer(''); setFeedback('');
   };
 
   const isSessionFinished = currentQuestionIndex >= questions.length;
+  const progress = questions.length > 0 ? ((currentQuestionIndex) / questions.length) * 100 : 0;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        AI Interview Coach
-      </h1>
+    <div className="max-w-3xl mx-auto animate-fadeInUp">
+      <div className="mb-8">
+        <p className="text-sm font-medium mb-2" style={{ color: 'var(--gold)' }}>Interview Coach</p>
+        <h1 className="font-display text-4xl font-semibold" style={{ color: 'var(--cream)' }}>
+          Practice makes perfect
+        </h1>
+        <p className="mt-2" style={{ color: 'var(--mist)' }}>
+          AI-generated questions with instant, detailed feedback.
+        </p>
+      </div>
 
-      {/* --- SETUP VIEW --- */}
+      {/* Setup */}
       {!sessionStarted && (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg">
-          <form onSubmit={handleStartSession}>
-            <label
-              htmlFor="job-title"
-              className="block text-lg font-medium text-gray-300 mb-2"
-            >
-              Enter the job title you're interviewing for:
-            </label>
-            <input
-              id="job-title"
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              placeholder="e.g., Senior Software Engineer"
-              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-200"
-            />
-            <div className="text-center mt-6">
-              <button
-                type="submit"
-                disabled={isLoading || !jobTitle}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg disabled:bg-gray-500 transition duration-300 text-lg"
-              >
-                {isLoading
-                  ? 'Generating Questions...'
-                  : 'Start Practice Session'}
-              </button>
+        <div className="card p-8">
+          <h2 className="font-semibold text-lg mb-5" style={{ color: 'var(--cream)' }}>Start a practice session</h2>
+          <form onSubmit={handleStartSession} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--mist-light)' }}>
+                Target job title
+              </label>
+              <input
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                placeholder="e.g., Senior Software Engineer, Product Manager..."
+                className="input-base"
+              />
             </div>
+            <button
+              type="submit"
+              disabled={isLoading || !jobTitle}
+              className="btn-primary w-full py-3.5 text-sm flex items-center justify-center gap-2"
+            >
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                  </svg>
+                  Generating questions…
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  Start Practice Session
+                </>
+              )}
+            </button>
           </form>
         </div>
       )}
 
-      {/* --- ACTIVE SESSION VIEW --- */}
+      {/* Active session */}
       {sessionStarted && !isSessionFinished && (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg space-y-6">
-          <div>
-            <p className="text-sm text-gray-400">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </p>
-            <p className="text-xl text-white mt-1">
+        <div className="space-y-5">
+          {/* Progress */}
+          <div className="card p-5">
+            <div className="flex items-center justify-between text-sm mb-3">
+              <span style={{ color: 'var(--mist)' }}>Question {currentQuestionIndex + 1} of {questions.length}</span>
+              <span style={{ color: 'var(--gold)' }}>{Math.round(progress)}% complete</span>
+            </div>
+            <div className="h-1.5 rounded-full" style={{ background: 'var(--ink-4)' }}>
+              <div
+                className="h-1.5 rounded-full transition-all duration-500"
+                style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--gold), var(--gold-light))' }}
+              />
+            </div>
+          </div>
+
+          {/* Question */}
+          <div className="card p-7">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                style={{ background: 'rgba(201, 168, 76, 0.15)', color: 'var(--gold)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
+                Q
+              </div>
+              <span className="text-xs font-medium" style={{ color: 'var(--mist)' }}>Interview Question</span>
+            </div>
+            <p className="text-lg font-medium leading-snug" style={{ color: 'var(--cream)' }}>
               {questions[currentQuestionIndex]}
             </p>
           </div>
-          <form onSubmit={handleSubmitAnswer}>
-            <textarea
-              rows={7}
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Type your answer here..."
-              className="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-200"
-              disabled={!!feedback}
-            />
-            {!feedback && (
-              <div className="text-center mt-4">
+
+          {/* Answer */}
+          <div className="card p-7">
+            <form onSubmit={handleSubmitAnswer} className="space-y-4">
+              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--mist-light)' }}>
+                Your Answer
+              </label>
+              <textarea
+                rows={7}
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Type your answer here. Be specific and use examples from your experience..."
+                className="input-base resize-none"
+                disabled={!!feedback}
+              />
+              {!feedback && (
                 <button
                   type="submit"
                   disabled={isGettingFeedback || !userAnswer}
-                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg disabled:bg-gray-500"
+                  className="btn-primary w-full py-3 text-sm flex items-center justify-center gap-2"
                 >
-                  {isGettingFeedback ? 'Getting Feedback...' : 'Submit Answer'}
+                  {isGettingFeedback ? (
+                    <>
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/>
+                      </svg>
+                      Getting feedback…
+                    </>
+                  ) : 'Submit Answer'}
+                </button>
+              )}
+            </form>
+
+            {feedback && (
+              <div className="mt-5 pt-5 animate-fadeInUp" style={{ borderTop: '1px solid var(--ink-4)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs"
+                    style={{ background: 'rgba(201, 168, 76, 0.1)', color: 'var(--gold)', border: '1px solid rgba(201, 168, 76, 0.2)' }}>
+                    AI
+                  </div>
+                  <span className="text-sm font-medium" style={{ color: 'var(--gold)' }}>AI Feedback</span>
+                </div>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--mist-light)' }}>{feedback}</p>
+                <button
+                  onClick={handleNextQuestion}
+                  className="btn-primary w-full py-3 text-sm mt-5 flex items-center justify-center gap-2"
+                >
+                  {currentQuestionIndex + 1 < questions.length ? (
+                    <>Next Question <span>→</span></>
+                  ) : 'Finish Session'}
                 </button>
               </div>
             )}
-          </form>
-
-          {feedback && (
-            <div className="mt-4 border-t border-gray-700 pt-4">
-              <h3 className="text-lg font-semibold text-yellow-300">
-                Feedback:
-              </h3>
-              <p className="text-gray-300 mt-2">{feedback}</p>
-              <div className="text-center mt-6">
-                <button
-                  onClick={handleNextQuestion}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg"
-                >
-                  Next Question →
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       )}
 
-      {/* --- FINISHED VIEW --- */}
+      {/* Finished */}
       {isSessionFinished && questions.length > 0 && (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg text-center">
-          <h2 className="text-2xl font-bold text-green-400 mb-4">
-            Practice Session Complete!
+        <div className="card p-10 text-center animate-fadeInUp">
+          <div className="text-5xl mb-4">🎉</div>
+          <h2 className="font-display text-3xl font-semibold mb-2" style={{ color: 'var(--cream)' }}>
+            Session Complete!
           </h2>
-          <p className="text-gray-300">
-            Great work. You can start a new session anytime.
+          <p className="mb-6" style={{ color: 'var(--mist)' }}>
+            Excellent work. Consistency is the key to interview success.
           </p>
           <button
-            onClick={() => setSessionStarted(false)}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg"
+            onClick={() => { setSessionStarted(false); setJobTitle(''); setQuestions([]); }}
+            className="btn-primary px-8 py-3 text-sm"
           >
             Start New Session
           </button>
         </div>
       )}
 
-      {error && <p className="text-center text-red-400 mt-4">{error}</p>}
+      {error && (
+        <p className="text-center text-sm mt-4" style={{ color: '#fca5a5' }}>{error}</p>
+      )}
     </div>
   );
 };

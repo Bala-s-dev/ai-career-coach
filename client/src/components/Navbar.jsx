@@ -1,40 +1,74 @@
-// client/src/components/Navbar.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = ({ user }) => {
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { to: '/analyzer', label: 'Resume' },
+    { to: '/jobs', label: 'Jobs' },
+    { to: '/interview', label: 'Interview' },
+  ];
+
   return (
-    <nav className="bg-gray-800 p-4 absolute top-0 left-0 w-full">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/dashboard" className="text-white text-xl font-bold">
-          AI Coach
+    <nav className="nav-blur fixed top-0 left-0 w-full z-50">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/dashboard" className="flex items-center gap-2.5 group">
+          <div className="w-7 h-7 rounded-md flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #e8c96a, #c9a84c)' }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z" fill="#0d0d0f"/>
+            </svg>
+          </div>
+          <span className="font-display text-lg font-semibold tracking-tight" style={{ color: 'var(--cream)' }}>
+            Apex<span style={{ color: 'var(--gold)' }}>AI</span>
+          </span>
         </Link>
-        <div className="flex items-center space-x-4">
-          <Link to="/analyzer" className="text-gray-300 hover:text-white">
-            Resume Analyzer
-          </Link>
-          <Link to="/jobs" className="text-gray-300 hover:text-white">
-            Job Search
-          </Link>
-          <Link to="/interview" className="text-gray-300 hover:text-white">
-            Interview Prep
-          </Link>
-          {user && (
-            <>
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map(({ to, label }) => {
+            const active = location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+                style={{
+                  color: active ? 'var(--gold-light)' : 'var(--mist)',
+                  background: active ? 'rgba(201, 168, 76, 0.1)' : 'transparent',
+                }}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* User */}
+        {user && (
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2.5">
               <img
                 src={user.image}
                 alt="profile"
-                className="w-8 h-8 rounded-full"
+                className="w-8 h-8 rounded-full ring-2"
+                style={{ ringColor: 'var(--gold-dim)' }}
               />
-              <a
-                href={`${import.meta.env.VITE_API_URL}/auth/logout`}
-                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-              >
-                Logout
-              </a>
-            </>
-          )}
-        </div>
+              <span className="text-sm font-medium" style={{ color: 'var(--mist-light)' }}>
+                {user.displayName?.split(' ')[0]}
+              </span>
+            </div>
+            <a
+              href={`${import.meta.env.VITE_API_URL}/auth/logout`}
+              className="btn-ghost text-xs px-3 py-1.5 font-medium"
+            >
+              Sign out
+            </a>
+          </div>
+        )}
       </div>
     </nav>
   );
