@@ -5,37 +5,39 @@ const Navbar = ({ user }) => {
   const location = useLocation();
 
   const navLinks = [
-    { to: '/analyzer', label: 'Resume' },
-    { to: '/jobs', label: 'Jobs' },
+    { to: '/dashboard', label: 'Dashboard' },
+    { to: '/analyzer',  label: 'Resume'    },
+    { to: '/jobs',      label: 'Jobs'      },
     { to: '/interview', label: 'Interview' },
   ];
 
   return (
     <nav className="nav-blur fixed top-0 left-0 w-full z-50">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center gap-4">
+
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
           <div
-            className="w-7 h-7 rounded-md flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #e8c96a, #c9a84c)' }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{
+              background: 'linear-gradient(135deg, #7c6fee, #534AB7)',
+              boxShadow: '0 0 20px rgba(83,74,183,0.55)',
+            }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z"
-                fill="#0d0d0f"
-              />
+            <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z" fill="#fff" />
             </svg>
           </div>
           <span
-            className="font-display text-lg font-semibold tracking-tight"
-            style={{ color: 'var(--cream)' }}
+            className="font-display text-lg font-bold tracking-tight"
+            style={{ color: 'var(--hero)' }}
           >
-            Career Coach<span style={{ color: 'var(--gold)' }}>AI</span>
+            Career Coach<span style={{ color: '#a89dff' }}>AI</span>
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
+        {/* Nav links */}
+        <div className="hidden md:flex items-center gap-1 ml-6">
           {navLinks.map(({ to, label }) => {
             const active = location.pathname === to;
             return (
@@ -44,10 +46,9 @@ const Navbar = ({ user }) => {
                 to={to}
                 className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150"
                 style={{
-                  color: active ? 'var(--gold-light)' : 'var(--mist)',
-                  background: active
-                    ? 'rgba(201, 168, 76, 0.1)'
-                    : 'transparent',
+                  color:      active ? '#c4bfff'                    : 'var(--meta)',
+                  background: active ? 'rgba(83,74,183,0.20)'       : 'transparent',
+                  border:     active ? '1px solid rgba(83,74,183,0.3)' : '1px solid transparent',
                 }}
               >
                 {label}
@@ -56,31 +57,39 @@ const Navbar = ({ user }) => {
           })}
         </div>
 
-        {/* User */}
-        {user && (
-          <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2.5">
-              <img
-                src={user.image}
-                alt="profile"
-                className="w-8 h-8 rounded-full ring-2"
-                style={{ ringColor: 'var(--gold-dim)' }}
-              />
-              <span
-                className="text-sm font-medium"
-                style={{ color: 'var(--mist-light)' }}
-              >
-                {user.displayName?.split(' ')[0]}
-              </span>
-            </div>
-            <a
-              href={`${import.meta.env.VITE_API_URL}/auth/logout`}
-              className="btn-ghost text-xs px-3 py-1.5 font-medium"
-            >
-              Sign out
-            </a>
+        {/* Spacer + right side */}
+        <div className="flex items-center gap-3 ml-auto">
+
+          {/* AI live indicator */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full"
+            style={{ background: 'rgba(29,158,117,0.1)', border: '1px solid rgba(29,158,117,0.2)' }}>
+            <span className="pulse-live" />
+            <span style={{ fontSize: '0.72rem', fontWeight: 500, color: '#4fd4a8' }}>AI Active</span>
           </div>
-        )}
+
+          {/* User */}
+          {user && (
+            <>
+              <div className="hidden md:flex items-center gap-2.5">
+                <img
+                  src={user.image}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full"
+                  style={{ border: '1.5px solid rgba(255,255,255,0.2)' }}
+                />
+                <span className="text-sm font-medium" style={{ color: 'var(--body-text)' }}>
+                  {user.displayName?.split(' ')[0]}
+                </span>
+              </div>
+              <a
+                href={`${import.meta.env.VITE_API_URL}/auth/logout`}
+                className="btn-ghost text-xs px-3 py-1.5 font-medium"
+              >
+                Sign out
+              </a>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
