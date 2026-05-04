@@ -14,73 +14,69 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get('/auth/user');
+    api
+      .get('/auth/user')
+      .then((res) => {
         if (res.data) {
           setUser(res.data);
           if (window.location.pathname === '/') navigate('/dashboard');
         }
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
+      })
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
   }, [navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-5">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: 'var(--bg)' }}
+      >
+        <div className="flex flex-col items-center gap-4">
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #7c6fee, #534AB7)',
-              boxShadow: '0 0 28px rgba(83,74,183,0.6)',
-            }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ background: 'var(--accent)' }}
           >
-            <svg width="20" height="20" viewBox="0 0 14 14" fill="none">
-              <path d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z" fill="#fff" />
+            <svg width="18" height="18" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z"
+                fill="#fff"
+              />
             </svg>
           </div>
-          <div className="flex gap-1.5">
-            {[0, 1, 2].map(i => (
-              <div
-                key={i}
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  background: '#7c6fee',
-                  animation: `bounce 0.9s ease-in-out ${i * 0.15}s infinite`,
-                }}
-              />
-            ))}
-          </div>
+          <div
+            className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
+            style={{
+              borderColor: 'var(--accent)',
+              borderTopColor: 'transparent',
+            }}
+          />
         </div>
-        <style>{`@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }`}</style>
       </div>
     );
   }
 
   return (
-    <div style={{ minHeight: '100vh' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {user && <Navbar user={user} />}
-      <main className={user ? 'pt-20 pb-12' : ''}>
-        <div className={user ? 'max-w-6xl mx-auto px-6' : ''}>
+      <main style={user ? { paddingTop: '3.5rem' } : {}}>
+        <div className={user ? 'max-w-5xl mx-auto px-5 py-8' : ''}>
           <Routes>
             {user ? (
               <>
-                <Route path="/dashboard" element={<DashboardPage user={user} />} />
-                <Route path="/analyzer"  element={<ResumeAnalyzerPage />} />
-                <Route path="/jobs"      element={<JobSearchPage />} />
+                <Route
+                  path="/dashboard"
+                  element={<DashboardPage user={user} />}
+                />
+                <Route path="/analyzer" element={<ResumeAnalyzerPage />} />
+                <Route path="/jobs" element={<JobSearchPage />} />
                 <Route path="/interview" element={<InterviewPrepPage />} />
-                <Route path="*"          element={<DashboardPage user={user} />} />
+                <Route path="*" element={<DashboardPage user={user} />} />
               </>
             ) : (
               <>
-                <Route path="/"  element={<LandingPage />} />
-                <Route path="*"  element={<LandingPage />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="*" element={<LandingPage />} />
               </>
             )}
           </Routes>
