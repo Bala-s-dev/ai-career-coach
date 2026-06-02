@@ -3,6 +3,17 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+// ADDED: Robust JSON parsing helper to strip markdown formatting
+const parseAIResponse = (text) => {
+  try {
+    const cleanedText = text.replace(/```json\n?|```/g, '').trim();
+    return JSON.parse(cleanedText);
+  } catch (error) {
+    console.error('Error parsing AI JSON response:', text);
+    throw new Error('AI returned an invalid data format.');
+  }
+};
+
 export const generateJobQueryFromResume = async (resumeText) => {
   const prompt = `
     Analyze the following resume text. Based on the skills, job titles, and experience, what is the single most appropriate job title or search query for this person's next job?
@@ -13,7 +24,6 @@ export const generateJobQueryFromResume = async (resumeText) => {
     - Senior Software Engineer
     - Product Manager
     - Data Analyst
-    - Graphic Designer
 
     Here is the resume text:
     ---
@@ -51,8 +61,8 @@ export const generateInterviewQuestions = async (jobTitle) => {
       response_format: { type: 'json_object' },
     });
 
-    const responseText = response.choices[0].message.content;
-    return JSON.parse(responseText);
+    // UPDATED: Using the safe parser
+    return parseAIResponse(response.choices[0].message.content);
   } catch (error) {
     console.error('Error generating interview questions with Groq:', error);
     throw new Error('Failed to generate interview questions from AI service.');
@@ -100,15 +110,12 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
   }`;
 
   if (jobDescription) {
-    // --- TARGETED ANALYSIS  ---
     prompt = `
-      You are an expert HR recruiter... (The initial instructions are the same)
-      
+      You are an expert HR recruiter and ATS optimizer. 
       The JSON object must have these exact keys: "matchScore", "summary", "keywordGaps", and "improvements".
-      // ...
-- \"matchScore\": A numerical score from 0 to 100. **Return only the integer value, do not include any text or slashes.**
-//...
-      The "improvements" key must be an array of 3-4 objects. EACH object in the array must follow this exact JSON structure:
+      "matchScore": A numerical score from 0 to 100. Return only the integer value.
+      
+      The "improvements" key must be an array of 3-4 objects following this exact JSON structure:
       ${improvementJsonStructure}
 
       Here is the RESUME text:
@@ -122,15 +129,12 @@ export const analyzeResume = async (resumeText, jobDescription = '') => {
       ---
     `;
   } else {
-    // --- GENERAL ANALYSIS ---
     prompt = `
-      You are an expert career coach... (The initial instructions are the same)
-
+      You are an expert career coach and ATS optimizer.
       The JSON object must have these exact keys: "overallScore", "summary", "keywordGaps", and "improvements".
-      // ...
-Your analysis should be in a structured JSON format with the following keys: \"overallScore\" (a numerical score from 0-100, **return only the integer value**), ...
-//...
-      The "improvements" key must be an array of 3-4 objects. EACH object in the array must follow this exact JSON structure:
+      "overallScore": A numerical score from 0-100. Return only the integer value.
+      
+      The "improvements" key must be an array of 3-4 objects following this exact JSON structure:
       ${improvementJsonStructure}
 
       Here is the resume text:
@@ -147,8 +151,8 @@ Your analysis should be in a structured JSON format with the following keys: \"o
       response_format: { type: 'json_object' },
     });
 
-    const responseText = response.choices[0].message.content;
-    return JSON.parse(responseText);
+    // UPDATED: Using the safe parser
+    return parseAIResponse(response.choices[0].message.content);
   } catch (error) {
     console.error('Error analyzing resume with Groq:', error);
     throw new Error('Failed to get analysis from AI service.');

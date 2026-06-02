@@ -75,10 +75,8 @@ const InterviewPrepPage = () => {
   return (
     <div className="max-w-2xl mx-auto animate-fadeInUp">
       <div className="mb-7">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-1)' }}>
-          Interview Coach
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-2)' }}>
+        <h1 className="text-2xl font-bold text-text-1">Interview Coach</h1>
+        <p className="text-sm mt-1 text-text-2">
           AI-generated practice questions with instant feedback.
         </p>
       </div>
@@ -86,26 +84,27 @@ const InterviewPrepPage = () => {
       {/* Setup */}
       {!sessionStarted && (
         <div className="card p-6">
-          <h2
-            className="text-sm font-semibold mb-4"
-            style={{ color: 'var(--text-1)' }}
-          >
+          <h2 className="text-sm font-semibold mb-4 text-text-1">
             Start a practice session
           </h2>
           <form onSubmit={handleStart} className="space-y-4">
             <div>
+              {/* UPDATED: Added htmlFor and id for a11y */}
               <label
-                className="block text-xs font-medium mb-2"
-                style={{ color: 'var(--text-2)' }}
+                htmlFor="jobTitle"
+                className="block text-xs font-medium mb-2 text-text-2"
               >
                 Target job title
               </label>
               <input
+                id="jobTitle"
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
                 placeholder="e.g. Senior Software Engineer, Product Manager…"
                 className="input-base"
+                disabled={isLoading}
+                aria-required="true"
               />
             </div>
             <button
@@ -129,69 +128,53 @@ const InterviewPrepPage = () => {
       {/* Active session */}
       {sessionStarted && !isFinished && (
         <div className="space-y-4">
-          {/* Progress bar */}
           <div className="card p-4">
-            <div
-              className="flex justify-between text-xs mb-2"
-              style={{ color: 'var(--text-3)' }}
-            >
+            <div className="flex justify-between text-xs mb-2 text-text-3">
               <span>
                 Question {currentIndex + 1} of {questions.length}
               </span>
               <span>{progress}% complete</span>
             </div>
-            <div
-              className="h-1.5 rounded-full"
-              style={{ background: 'var(--border2)' }}
-            >
+            <div className="h-1.5 rounded-full bg-border2">
               <div
-                className="h-1.5 rounded-full transition-all duration-500"
-                style={{ width: `${progress}%`, background: 'var(--accent)' }}
+                className="h-1.5 rounded-full transition-all duration-500 bg-accent"
+                style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
-          {/* Question */}
           <div className="card p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span
-                className="text-xs font-semibold px-2 py-0.5 rounded"
-                style={{
-                  background: 'var(--surface2)',
-                  color: 'var(--accent-h)',
-                  border: '1px solid var(--border2)',
-                }}
-              >
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-surface2 text-accent-h border border-border2">
                 Q{currentIndex + 1}
               </span>
-              <span className="text-xs" style={{ color: 'var(--text-3)' }}>
-                Interview question
-              </span>
+              <span className="text-xs text-text-3">Interview question</span>
             </div>
-            <p
-              className="text-base font-medium leading-snug"
-              style={{ color: 'var(--text-1)' }}
-            >
+            <p className="text-base font-medium leading-snug text-text-1">
               {questions[currentIndex]}
             </p>
           </div>
 
-          {/* Answer */}
           <div className="card p-5">
             <form onSubmit={handleSubmitAnswer} className="space-y-3">
+              {/* UPDATED: Added htmlFor and id for a11y */}
               <label
-                className="block text-xs font-medium"
-                style={{ color: 'var(--text-2)' }}
+                htmlFor="userAnswer"
+                className="block text-xs font-medium text-text-2"
               >
                 Your Answer
               </label>
               <textarea
+                id="userAnswer"
                 rows={6}
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 placeholder="Write your answer here. Use specific examples and be concise…"
                 className="input-base resize-none"
-                disabled={!!feedback}
+                disabled={
+                  !!feedback || isGettingFeedback
+                } /* UPDATED: Prevent editing while loading */
+                aria-required="true"
               />
 
               {!feedback && (
@@ -215,23 +198,11 @@ const InterviewPrepPage = () => {
             {/* Feedback */}
             {feedback && (
               <div className="mt-4 space-y-3 animate-fadeInUp">
-                <div
-                  className="rounded-lg p-4"
-                  style={{
-                    background: 'rgba(99,102,241,0.07)',
-                    border: '1px solid rgba(99,102,241,0.2)',
-                  }}
-                >
-                  <p
-                    className="text-xs font-semibold mb-2"
-                    style={{ color: 'var(--accent-h)' }}
-                  >
+                <div className="rounded-lg p-4 bg-accent/10 border border-accent/20">
+                  <p className="text-xs font-semibold mb-2 text-accent-h">
                     AI Feedback
                   </p>
-                  <p
-                    className="text-sm leading-relaxed"
-                    style={{ color: 'var(--text-2)' }}
-                  >
+                  <p className="text-sm leading-relaxed text-text-2">
                     {feedback}
                   </p>
                 </div>
@@ -253,13 +224,10 @@ const InterviewPrepPage = () => {
       {isFinished && (
         <div className="card p-10 text-center animate-fadeInUp">
           <div className="text-4xl mb-4">🎯</div>
-          <h2
-            className="text-xl font-bold mb-2"
-            style={{ color: 'var(--text-1)' }}
-          >
+          <h2 className="text-xl font-bold mb-2 text-text-1">
             Session Complete!
           </h2>
-          <p className="text-sm mb-6" style={{ color: 'var(--text-2)' }}>
+          <p className="text-sm mb-6 text-text-2">
             Great work. Consistency is the key to interview success.
           </p>
           <button
@@ -271,16 +239,8 @@ const InterviewPrepPage = () => {
         </div>
       )}
 
-      {/* Error */}
       {error && (
-        <div
-          className="mt-4 px-4 py-3 rounded-lg text-sm"
-          style={{
-            background: 'rgba(239,68,68,0.1)',
-            border: '1px solid rgba(239,68,68,0.2)',
-            color: '#fca5a5',
-          }}
-        >
+        <div className="mt-4 px-4 py-3 rounded-lg text-sm bg-red-500/10 border border-red-500/20 text-red-400">
           {error}
         </div>
       )}

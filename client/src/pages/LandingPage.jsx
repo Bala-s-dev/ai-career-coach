@@ -77,15 +77,12 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <div className="min-h-screen bg-bg">
       {/* Nav */}
       <nav className="nav-blur fixed top-0 left-0 w-full z-50">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--accent)' }}
-            >
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent">
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
                 <path
                   d="M7 1L9 5H13L9.5 7.5L11 12L7 9.5L3 12L4.5 7.5L1 5H5L7 1Z"
@@ -93,11 +90,8 @@ const LandingPage = () => {
                 />
               </svg>
             </div>
-            <span
-              className="font-semibold text-sm"
-              style={{ color: 'var(--text-1)' }}
-            >
-              CareerCoach<span style={{ color: 'var(--accent-h)' }}>AI</span>
+            <span className="font-semibold text-sm text-text-1">
+              CareerCoach<span className="text-accent-h">AI</span>
             </span>
           </div>
           <a
@@ -112,31 +106,18 @@ const LandingPage = () => {
       {/* Hero */}
       <section className="hero-grid min-h-screen flex items-center justify-center px-5 pt-14">
         <div className="max-w-2xl mx-auto text-center py-24">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-xs font-medium"
-            style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--border2)',
-              color: 'var(--text-2)',
-            }}
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 text-xs font-medium bg-surface border-border2 text-text-2 border">
             <span className="pulse-live" />
             AI-Powered Career Tools
           </div>
 
-          <h1
-            className="text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-5"
-            style={{ color: 'var(--text-1)' }}
-          >
+          <h1 className="text-5xl md:text-6xl font-bold leading-tight tracking-tight mb-5 text-text-1">
             Land the job
             <br />
             <span className="text-gold-gradient">you deserve.</span>
           </h1>
 
-          <p
-            className="text-base md:text-lg mb-10 leading-relaxed max-w-lg mx-auto"
-            style={{ color: 'var(--text-2)' }}
-          >
+          <p className="text-base md:text-lg mb-10 leading-relaxed max-w-lg mx-auto text-text-2">
             Resume analysis, job matching, and interview coaching — everything
             you need to get hired, in one place.
           </p>
@@ -164,12 +145,7 @@ const LandingPage = () => {
             ].map(([v, l]) => (
               <div key={l} className="text-center">
                 <div className="text-2xl font-bold text-gold-gradient">{v}</div>
-                <div
-                  className="text-xs mt-1"
-                  style={{ color: 'var(--text-3)' }}
-                >
-                  {l}
-                </div>
+                <div className="text-xs mt-1 text-text-3">{l}</div>
               </div>
             ))}
           </div>
@@ -178,61 +154,32 @@ const LandingPage = () => {
 
       {/* Features */}
       <section id="features" className="max-w-5xl mx-auto px-5 py-20">
-        <h2
-          className="text-2xl font-bold mb-2 text-center"
-          style={{ color: 'var(--text-1)' }}
-        >
+        <h2 className="text-2xl font-bold mb-2 text-center text-text-1">
           Everything in one place
         </h2>
-        <p
-          className="text-sm mb-12 text-center"
-          style={{ color: 'var(--text-2)' }}
-        >
+        <p className="text-sm mb-12 text-center text-text-2">
           Three tools, one workflow, zero fluff.
         </p>
+
         <div className="grid md:grid-cols-3 gap-4">
           {features.map(({ icon, title, desc }) => (
             <div key={title} className="card p-6">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center mb-4"
-                style={{
-                  background: 'var(--surface2)',
-                  color: 'var(--accent-h)',
-                  border: '1px solid var(--border2)',
-                }}
-              >
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-4 bg-surface2 text-accent-h border border-border2">
                 {icon}
               </div>
-              <h3
-                className="font-semibold text-sm mb-2"
-                style={{ color: 'var(--text-1)' }}
-              >
+              <h3 className="font-semibold text-sm mb-2 text-text-1">
                 {title}
               </h3>
-              <p
-                className="text-sm leading-relaxed"
-                style={{ color: 'var(--text-2)' }}
-              >
-                {desc}
-              </p>
+              <p className="text-sm leading-relaxed text-text-2">{desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Steps */}
-      <section
-        className="py-16"
-        style={{
-          borderTop: '1px solid var(--border)',
-          borderBottom: '1px solid var(--border)',
-        }}
-      >
+      <section className="py-16 border-y border-border">
         <div className="max-w-3xl mx-auto px-5">
-          <h2
-            className="text-2xl font-bold mb-10 text-center"
-            style={{ color: 'var(--text-1)' }}
-          >
+          <h2 className="text-2xl font-bold mb-10 text-center text-text-1">
             Up and running in minutes
           </h2>
           <div className="space-y-3">
@@ -259,26 +206,15 @@ const LandingPage = () => {
               ],
             ].map(([num, title, body]) => (
               <div key={num} className="card p-5 flex gap-5 items-start">
-                <span
-                  className="text-lg font-bold shrink-0 w-8 text-center"
-                  style={{ color: 'var(--accent)', lineHeight: 1.4 }}
-                >
+                <span className="text-lg font-bold shrink-0 w-8 text-center text-accent leading-relaxed">
                   {num}
                 </span>
-                <div
-                  className="w-px self-stretch"
-                  style={{ background: 'var(--border2)' }}
-                />
+                <div className="w-px self-stretch bg-border2" />
                 <div>
-                  <p
-                    className="font-semibold text-sm mb-0.5"
-                    style={{ color: 'var(--text-1)' }}
-                  >
+                  <p className="font-semibold text-sm mb-0.5 text-text-1">
                     {title}
                   </p>
-                  <p className="text-sm" style={{ color: 'var(--text-2)' }}>
-                    {body}
-                  </p>
+                  <p className="text-sm text-text-2">{body}</p>
                 </div>
               </div>
             ))}
@@ -286,45 +222,14 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-5xl mx-auto px-5 py-20 text-center">
-        <div
-          className="card p-12 max-w-xl mx-auto"
-          style={{ borderColor: 'rgba(99,102,241,0.2)' }}
-        >
-          <h2
-            className="text-2xl font-bold mb-3"
-            style={{ color: 'var(--text-1)' }}
-          >
-            Ready to stand out?
-          </h2>
-          <p className="text-sm mb-7" style={{ color: 'var(--text-2)' }}>
-            Join thousands of professionals who've levelled up their career with
-            CareerCoachAI.
-          </p>
-          <a
-            href={`${apiUrl}/auth/google`}
-            className="btn-primary px-7 py-3 text-sm flex items-center gap-2 justify-center mx-auto w-fit"
-          >
-            <GoogleIcon /> Start for free
-          </a>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer
-        className="px-5 py-6"
-        style={{ borderTop: '1px solid var(--border)' }}
-      >
+      <footer className="px-5 py-6 border-t border-border mt-20">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-3">
-          <span
-            className="text-sm font-semibold"
-            style={{ color: 'var(--text-2)' }}
-          >
-            CareerCoach<span style={{ color: 'var(--accent-h)' }}>AI</span>
+          <span className="text-sm font-semibold text-text-2">
+            CareerCoach<span className="text-accent-h">AI</span>
           </span>
-          <p className="text-xs" style={{ color: 'var(--text-3)' }}>
-            © 2025 CareerCoachAI. All rights reserved.
+          <p className="text-xs text-text-3">
+            © 2026 CareerCoachAI. All rights reserved.
           </p>
         </div>
       </footer>
